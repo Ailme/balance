@@ -186,7 +186,7 @@ class ManagerDb extends ManagerDbTransaction
     /**
      * @inheritdoc
      */
-    protected function writeTransaction($attributes)
+    protected function createTransaction($attributes)
     {
         $attributes = $this->serializeAttributes($attributes, $this->db->getTableSchema($this->transactionTable)->getColumnNames());
         $primaryKeys = $this->db->getSchema()->insert($this->transactionTable, $attributes);
@@ -225,6 +225,9 @@ class ManagerDb extends ManagerDbTransaction
      */
     protected function createDbTransaction()
     {
+        if ($this->db->getTransaction() !== null) {
+            return null;
+        }
         return $this->db->beginTransaction();
     }
 }

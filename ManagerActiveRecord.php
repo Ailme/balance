@@ -101,7 +101,7 @@ class ManagerActiveRecord extends ManagerDbTransaction
     /**
      * @inheritdoc
      */
-    protected function writeTransaction($attributes)
+    protected function createTransaction($attributes)
     {
         /* @var $class ActiveRecordInterface */
         $class = $this->transactionClass;
@@ -149,6 +149,11 @@ class ManagerActiveRecord extends ManagerDbTransaction
         /* @var $class ActiveRecordInterface|BaseActiveRecord */
         $class = $this->transactionClass;
         $db = $class::getDb();
+
+        if ($db->hasMethod('getTransaction') && $db->getTransaction() !== null) {
+            return null;
+        }
+
         if ($db->hasMethod('beginTransaction')) {
             return $db->beginTransaction();
         }
